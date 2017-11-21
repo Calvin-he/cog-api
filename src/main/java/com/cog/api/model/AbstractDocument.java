@@ -12,8 +12,8 @@ public class AbstractDocument {
 
 	@Id
 	private String _id;
-	private Date created;
-	private Date updated;
+	private Date created = new Date();
+	private Date updated = new Date();
 	
 	/**
 	 * Returns the identifier of the document.
@@ -60,10 +60,6 @@ public class AbstractDocument {
 		return this._id.equals(that.get_id());
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return _id == null ? 0 : _id.hashCode();

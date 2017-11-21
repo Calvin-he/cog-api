@@ -32,18 +32,10 @@ import com.cog.api.model.Series;
 public class BaseController<T extends AbstractDocument> {
 	private final Class<T> genericType;
 	
+	@Autowired
 	protected MongoTemplate mongoTemplate;
+	@Autowired
 	protected CogApiProperties cogApiProperties;
-
-	@Autowired
-	public void setMongoTemplate(MongoTemplate mongoTemplate) {
-		this.mongoTemplate = mongoTemplate;	
-	}
-	
-	@Autowired
-	public void setCogApiProperties(CogApiProperties props) {
-		this.cogApiProperties = props;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public BaseController() {

@@ -50,6 +50,7 @@ public class JwtTokenUtils {
 				.commaSeparatedStringToAuthorityList((String) body.get("roles"));
 		JwtUser jwtUser = new JwtUser(body.getId(), username, body.getExpiration());
 		authentication = new JwtUserAuthentication(jwtUser, grantedAuthorities);
+		authentication.setAuthenticated(true);
 		return authentication;
 	}
 

@@ -17,7 +17,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 	private Log log = LogFactory.getLog(this.getClass());
 		
     public JwtAuthenticationTokenFilter() {
-        super("**/**");
+        super("/**");
     }
 
     @Override

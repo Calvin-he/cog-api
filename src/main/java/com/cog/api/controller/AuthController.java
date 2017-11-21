@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cog.api.model.User;
 import com.cog.api.security.JwtTokenUtils;
 import com.cog.api.security.JwtUser;
+import com.cog.api.security.JwtUserAuthentication;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,9 +37,13 @@ public class AuthController{
 	@PostMapping("/login")
 	public AuthObject login(@RequestBody Map<String, Object> credentials) {
 		String origin = (String) credentials.get("origin");
+		if(StringUtils.isEmpty(origin)) {
+			throw new RuntimeException("Invalid input");
+		}
+		
 		AuthObject authObj = null;
 		if(origin.equals("cogen")) {
-			String username = (String)credentials.get("userame");
+			String username = (String)credentials.get("username");
 			String password = (String)credentials.get("password");
 			if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
 			    throw new RuntimeException("Invalid credentials");
@@ -52,7 +58,7 @@ public class AuthController{
 		}else if(origin.equals("wechat")) {
 			throw new RuntimeException("Not implemented for wechat authentication now");
 		}else {
-			throw new RuntimeException("invalid");
+			throw new RuntimeException("invalid input");
 		}
 		return authObj;
 	}
@@ -68,12 +74,21 @@ public class AuthController{
 	
 	@GetMapping("/user")
 	public User getMySelf() {
-		return null;
+		JwtUserAuthentication authentication = (JwtUserAuthentication)SecurityContextHolder.getContext().getAuthentication();
+		JwtUser jwtUser= authentication.getPrincipal();
+		Query query = new Query(Criteria.where("_id").is(jwtUser.getId()));
+		User user = this.mongoTemplate.findOne(query, User.class);
+		return user;
 	}
 	
 	@GetMapping("/refresh")
 	public AuthObject refresh() {
-		return null;
+		throw new RuntimeException("Not implemented yet");
+	}
+	
+	@GetMapping("/logout")
+	public void logout() {
+		throw new RuntimeException("Not implemented yet");
 	}
 	
 }
@@ -88,4 +103,17 @@ class AuthObject {
 		this.expired = expired;
 		this.user = user;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public Date getExpired() {
+		return expired;
+	}
+
+	public User getUser() {
+		return user;
+	}
+	
 }
