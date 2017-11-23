@@ -12,6 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.util.StringUtils;
 
 public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
 	private Log log = LogFactory.getLog(this.getClass());
@@ -26,13 +28,13 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
         String header = httpServletRequest.getHeader("Authorisation");
         
 
-        if (header == null || !header.startsWith("Token ")) {
+        if (StringUtils.isEmpty(header)) {
             throw new RuntimeException("JWT Token is missing");
         }
 
         String authenticationToken = header.substring(6);
 
-        JwtUserAuthentication auth = new JwtUserAuthentication(authenticationToken);
+        PreAuthenticatedAuthenticationToken auth = new PreAuthenticatedAuthenticationToken(null, authenticationToken);
         return getAuthenticationManager().authenticate(auth);
     }
 

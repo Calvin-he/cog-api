@@ -1,6 +1,5 @@
 package com.cog.api.controller;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -8,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +18,7 @@ import com.cog.api.model.User;
 import com.cog.api.security.JwtTokenUtils;
 import com.cog.api.security.JwtUser;
 import com.cog.api.security.JwtUserAuthentication;
+import com.cog.api.security.SecurityUtils;
 
 @RestController
 @RequestMapping("/auth")
@@ -66,15 +63,14 @@ public class AuthController{
 
 	private AuthObject createAuthObjectFromUser(User user) {
 		Date expiredDate = new Date(System.currentTimeMillis() + 24*3600);
-		JwtUser jwtUser = new JwtUser(user.get_id(), user.getUsername(), expiredDate);
-		Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRoles().toArray(new String[0]));
-		String token = JwtTokenUtils.generate(jwtUser, authorities);
+		JwtUser jwtUser = new JwtUser(user.get_id(), user.getUsername(), expiredDate, user.getRoles().toArray(new String[0]));;
+		String token = JwtTokenUtils.generate(jwtUser);
 		return new AuthObject(token, expiredDate, user);
 	}
 	
 	@GetMapping("/user")
 	public User getMySelf() {
-		JwtUserAuthentication authentication = (JwtUserAuthentication)SecurityContextHolder.getContext().getAuthentication();
+		JwtUserAuthentication authentication = SecurityUtils.getAuthentication();
 		JwtUser jwtUser= authentication.getPrincipal();
 		Query query = new Query(Criteria.where("_id").is(jwtUser.getId()));
 		User user = this.mongoTemplate.findOne(query, User.class);

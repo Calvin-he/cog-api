@@ -1,16 +1,14 @@
 package com.cog.api.model;
 
-import java.util.List;
-
 public class Comment extends AbstractDocument{
 	private String lessonId;
 	private String content;
-	private int voteUpNum;
-	private int top;  // higer top value, higher order
+	private int voteUpNum = 0;
+	private int top = 0;  // higer top value, higher order
 	private String username;
 	private String userNickname;
 	private String userAvatar;
-	private List<Comment> replied;
+	private String repliedTo;
 	
 	public String getLessonId() {
 		return lessonId;
@@ -55,11 +53,11 @@ public class Comment extends AbstractDocument{
 	public void setUserAvatar(String userAvatar) {
 		this.userAvatar = userAvatar;
 	}
-	public List<Comment> getReplied() {
-		return replied;
+	public String getRepliedTo() {
+		return repliedTo;
 	}
-	public void setReplied(List<Comment> replied) {
-		this.replied = replied;
+	public void setReplied(String repliedTo) {
+		this.repliedTo = repliedTo;
 	}
 
 }

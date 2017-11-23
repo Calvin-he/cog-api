@@ -1,15 +1,10 @@
 package com.cog.api.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 
 import io.jsonwebtoken.Claims;
@@ -22,17 +17,16 @@ public class JwtTokenUtils {
 	private static String secret = "cognitiven-he";
 	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
 
-	public static String generate(JwtUser jwtUser, Collection<GrantedAuthority> authorities) {
+	public static String generate(JwtUser jwtUser) {
 		Claims claims = Jwts.claims().setId(jwtUser.getId()).setSubject(jwtUser.getUsername())
 				.setExpiration(jwtUser.getExpiredDate());
-		String roles = authorities2String(authorities);
+		String roles = roles2String(jwtUser.getRoles());
 		claims.put("roles", roles);
 
 		return Jwts.builder().setClaims(claims).signWith(signatureAlgorithm, secret).compact();
 	}
 
-	public static JwtUserAuthentication parse(String token) {
-		JwtUserAuthentication authentication = null;
+	public static JwtUser parse(String token) {
 		Claims body = null;
 		try {
 			body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
@@ -46,19 +40,16 @@ public class JwtTokenUtils {
 		}
 
 		String username = body.getSubject();
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				.commaSeparatedStringToAuthorityList((String) body.get("roles"));
-		JwtUser jwtUser = new JwtUser(body.getId(), username, body.getExpiration());
-		authentication = new JwtUserAuthentication(jwtUser, grantedAuthorities);
-		authentication.setAuthenticated(true);
-		return authentication;
+		String roles = (String)body.get("roles");
+		JwtUser jwtUser = new JwtUser(body.getId(), username, body.getExpiration(), string2Roles(roles));
+		return jwtUser;
 	}
 
-	private static String authorities2String(Collection<GrantedAuthority> authorities) {
-		ArrayList<String> sa = new ArrayList<String>(authorities.size());
-		for (GrantedAuthority ga : authorities) {
-			sa.add(ga.getAuthority());
-		}
-		return String.join(",", sa);
+	private static String roles2String(String[] roles) {
+		return String.join(",", roles);
+	}
+	
+	private static String[] string2Roles(String roles) {
+		return roles.split(",");
 	}
 }
