@@ -18,7 +18,7 @@ import com.cog.api.model.Lesson;
 import com.cog.api.model.Series;
 
 @RestController
-@RequestMapping("/series")
+@RequestMapping("/api/1.0/series")
 public class SeriesController extends BaseController<Series> {
 	@Override
 	protected Series innerCreate(Series s) {

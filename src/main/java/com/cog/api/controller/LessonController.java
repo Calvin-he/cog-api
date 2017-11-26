@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cog.api.model.Comment;
 import com.cog.api.model.Lesson;
@@ -21,7 +22,8 @@ import com.cog.api.model.User;
 import com.cog.api.security.JwtUser;
 import com.cog.api.security.SecurityUtils;
 
-@RequestMapping("/lessons")
+@RestController
+@RequestMapping("/api/1.0/lessons")
 public class LessonController extends BaseController<Lesson> {
 	
 	@Override

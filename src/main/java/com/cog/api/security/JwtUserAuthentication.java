@@ -17,13 +17,13 @@ public class JwtUserAuthentication extends AbstractAuthenticationToken {
     
     public static JwtUserAuthentication createFromToken(String token) {
     	JwtUser user = JwtTokenUtils.parse(token);
-    	List<GrantedAuthority> authorities= AuthorityUtils.createAuthorityList(user.getRoles());
-    	return new JwtUserAuthentication(user, authorities);
+    	return new JwtUserAuthentication(user, token);
     }
 
-    private JwtUserAuthentication(JwtUser user, List<GrantedAuthority> grantedAuthorities) {
-    	super(grantedAuthorities);
+    protected JwtUserAuthentication(JwtUser user, String token) {
+    	super(AuthorityUtils.createAuthorityList(user.getRoles()));
     	this.principal = user;
+    	this.credentials = token;
     }
     
 

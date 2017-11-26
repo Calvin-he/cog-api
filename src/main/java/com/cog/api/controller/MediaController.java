@@ -25,7 +25,7 @@ import com.cog.api.model.Media;
 import com.cog.api.model.Series;
 
 @RestController
-@RequestMapping("/media")
+@RequestMapping("/api/1.0//media")
 public class MediaController extends BaseController<Media> {
 	private Path rootLocation;
 

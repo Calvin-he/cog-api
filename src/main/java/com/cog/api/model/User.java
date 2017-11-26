@@ -88,8 +88,8 @@ public class User extends AbstractDocument {
 		return this.roles.contains(ROLE_ADMIN);
 	}
 	
-	public Set<String> getRoles() {
-		return this.roles;
+	public String[] getRoles() {
+		return this.roles.toArray(new String[0]);
 	}
 	
 	public void addRole(String role) {

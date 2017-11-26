@@ -1,5 +1,6 @@
 build/
 /bin/
+/public/
 
 #eclipse related configuration files
 .settings/
