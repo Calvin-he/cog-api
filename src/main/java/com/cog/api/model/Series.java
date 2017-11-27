@@ -3,6 +3,9 @@ package com.cog.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="series")
 public class Series extends AbstractDocument {
 	private String title;
 	private String desc;

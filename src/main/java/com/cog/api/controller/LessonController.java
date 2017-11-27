@@ -54,19 +54,19 @@ public class LessonController extends BaseController<Lesson> {
 	}
 
 	@GetMapping("/{id}/comments")
-	public List<Comment> listComment(@PathVariable String lid) {
-		Query q = new Query(Criteria.where("lessonId").is(lid));
+	public List<Comment> listComment(@PathVariable String id) {
+		Query q = new Query(Criteria.where("lessonId").is(id));
 		return this.mongoTemplate.find(q, Comment.class);
 	}
 	
 	@PostMapping("/{id}/comments")
-	public Comment createComment(@PathVariable String lid, @RequestBody Map<String, Object> body) {
+	public Comment createComment(@PathVariable String id, @RequestBody Map<String, Object> body) {
 		String content = (String)body.get("content");
 		Comment c = new Comment();
 		JwtUser juser = SecurityUtils.getCurrentUser();
 		User user = this.mongoTemplate.findById(new ObjectId(juser.getId()), User.class);
 		
-		c.setLessonId(lid);
+		c.setLessonId(id);
 		c.setContent(content);
 		c.setUsername(user.getUsername());
 		c.setUserNickname(user.getNickname());

@@ -1,6 +1,8 @@
 package com.cog.api.controller;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,12 +38,14 @@ public class AuthController{
 	}
 
 	@GetMapping("/user")
-	public User getMySelf() {
+	public Map<String, User> getMySelf() {
 		JwtUserAuthentication authentication = SecurityUtils.getAuthentication();
 		JwtUser jwtUser= authentication.getPrincipal();
 		Query query = new Query(Criteria.where("_id").is(jwtUser.getId()));
 		User user = this.mongoTemplate.findOne(query, User.class);
-		return user;
+		Map<String, User> res = new HashMap<String, User>();
+		res.put("data", user);
+		return res;
 	}
 	
 	@GetMapping("/refresh")

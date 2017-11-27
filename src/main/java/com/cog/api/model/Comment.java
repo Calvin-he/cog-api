@@ -1,5 +1,8 @@
 package com.cog.api.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="comments")
 public class Comment extends AbstractDocument{
 	private String lessonId;
 	private String content;

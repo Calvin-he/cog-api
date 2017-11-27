@@ -1,5 +1,8 @@
 package com.cog.api.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="lessons")
 public class Lesson extends AbstractDocument{
 	
 	private String title;

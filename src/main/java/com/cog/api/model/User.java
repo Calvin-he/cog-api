@@ -7,11 +7,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.cog.api.Utils;
 
+@Document(collection="users")
 public class User extends AbstractDocument {
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_TEACHER = "ROLE_TEACHER";
