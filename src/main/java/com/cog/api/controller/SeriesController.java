@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,12 @@ public class SeriesController extends BaseController<Series> {
 			m.put("bannerPath", this.findMediaPathById(bannerId));
 		}
 		return m;
+	}
+	
+	@Override
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public Series get(@PathVariable String id) {
+		return super.get(id);
 	}
 	
 	@GetMapping("/{id}/lessons")

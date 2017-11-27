@@ -31,8 +31,9 @@ public class LessonController extends BaseController<Lesson> {
 		String mediaPath = this.findMediaPathById(les.getMediaId());
 		les.setMediaPath(mediaPath);
 		
-		String mediaPath2 = this.findMediaPathById(les.getMediaId2());
+		String mediaPath2 = les.getMediaId2();
 		if(!StringUtils.isEmpty(mediaPath2)) {
+			mediaPath2 = this.findMediaPathById(mediaPath2);
 			les.setMediaPath2(mediaPath2);
 		}
 		return les;

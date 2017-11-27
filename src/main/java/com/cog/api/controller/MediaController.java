@@ -10,8 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +29,23 @@ import com.cog.api.model.Series;
 @RestController
 @RequestMapping("/api/1.0//media")
 public class MediaController extends BaseController<Media> {
+	
+	public static final String UPLOAD_DIR_NAME = "upload";
 	private Path rootLocation;
 
+	@PostConstruct
+	public void afterPropertiesSet() {
+		this.rootLocation = Paths.get(this.cogApiProperties.getMediaRoot(), UPLOAD_DIR_NAME);
+		try {
+			if(Files.notExists(this.rootLocation)) {
+				Files.createDirectories(this.rootLocation);
+			}		
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 	@Override
 	public Media create(@Valid @RequestBody Media s, BindingResult result) {
 		throw new UnsupportedOperationException();
@@ -39,6 +56,7 @@ public class MediaController extends BaseController<Media> {
 		throw new UnsupportedOperationException();
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/upload")
 	public Media upload(@RequestParam("file") MultipartFile file) throws IOException {
 		Path dest = this.store(file);
@@ -68,11 +86,6 @@ public class MediaController extends BaseController<Media> {
 	}
 	
 	private Path store(MultipartFile file) throws IOException {
-		if (this.rootLocation == null) {
-			this.rootLocation = Paths.get(this.cogApiProperties.getMediaRoot(), "upload");
-			Files.createDirectories(this.rootLocation);
-		}
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String dateStr = LocalDate.now().format(formatter);		
 		Path dir = this.rootLocation.resolve(dateStr);

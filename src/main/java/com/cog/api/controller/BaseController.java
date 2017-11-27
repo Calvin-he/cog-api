@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
@@ -15,6 +17,7 @@ import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +33,8 @@ import com.cog.api.model.Media;
 import com.cog.api.model.Series;
 
 public class BaseController<T extends AbstractDocument> {
+	protected final Log logger = LogFactory.getLog(MediaController.class);
+	
 	private final Class<T> genericType;
 	
 	@Autowired
@@ -42,17 +47,20 @@ public class BaseController<T extends AbstractDocument> {
 		this.genericType = (Class<T>) GenericTypeResolver.resolveTypeArgument(getClass(), BaseController.class);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("")
 	public List<T> listAll() {
 		List<T> seriesList= this.mongoTemplate.findAll(genericType);
 		return seriesList;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
 	public T get(@PathVariable String id) {
 		return this.mongoTemplate.findById(id, genericType);
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("")
 	public T create(@Valid @RequestBody T s, BindingResult result) {
 		Assert.isNull(s.get_id(), "id should be null");
@@ -71,6 +79,7 @@ public class BaseController<T extends AbstractDocument> {
 		return t;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	public Series update(@PathVariable String id, @RequestBody Map<String, Object> updatedFields) {
 		Map<String, Object> newFields = this.innerUpdate(id, updatedFields);
@@ -86,6 +95,7 @@ public class BaseController<T extends AbstractDocument> {
 		return updatedFields;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable String id) {
 		this.mongoTemplate.remove(this.queryOfById(id), genericType);

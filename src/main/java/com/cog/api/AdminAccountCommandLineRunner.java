@@ -18,25 +18,33 @@ public class AdminAccountCommandLineRunner implements ApplicationRunner {
 	
 	private static final String ADMIN_USERNAME = "admin";
 	
+	private static final String PLAIN_USERNAME = "cogen";
+	
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		Query q = new Query(Criteria.where("username").is(ADMIN_USERNAME));
+		this.createUserIfNotExists(ADMIN_USERNAME, "studycogen", new String[]{User.ROLE_ADMIN, User.ROLE_TEACHER, User.ROLE_USER});
+		this.createUserIfNotExists(PLAIN_USERNAME, "test", new String[]{User.ROLE_USER});
+	}
+	
+	private boolean createUserIfNotExists(String username,  String password, String[] roles) {
+		Query q = new Query(Criteria.where("username").is(username));
 		User user = this.mongoTemplate.findOne(q, User.class);
 		if(user == null) {
-			//create admin
-			log.info("creating User admin...");
-			User u = new User(ADMIN_USERNAME);
-			u.setPassword("studycogen");
-			u.addRole(User.ROLE_ADMIN);
-			u.addRole(User.ROLE_TEACHER);
-			u.addRole(User.ROLE_USER);
-			
+			//create account
+			log.info(String.format("creating User '%s'...", username));
+			User u = new User(username);
+			u.setPassword(password);
+			for(String role:roles) {
+				u.addRole(role);
+			}
 			this.mongoTemplate.save(u);
-			log.info("User admin created.");
+			log.info(String.format("User '%s' created.",username));
+			return true;
+		} else {
+			return false;
 		}
-		
 	}
 }

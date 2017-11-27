@@ -1,9 +1,6 @@
 package com.cog.api.security;
 
-import java.util.List;
-
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 public class JwtUserAuthentication extends AbstractAuthenticationToken {

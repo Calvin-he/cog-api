@@ -13,9 +13,9 @@ import org.springframework.util.StringUtils;
 import com.cog.api.Utils;
 
 public class User extends AbstractDocument {
-	public static final String ROLE_ADMIN = "ADMIN";
-	public static final String ROLE_TEACHER = "TEACHER";
-	public static final String ROLE_USER = "USER";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_TEACHER = "ROLE_TEACHER";
+	public static final String ROLE_USER = "ROLE_USER";
 	
 	@Indexed(unique=true)
 	private String username;
