@@ -1,7 +1,5 @@
 package com.cog.api.security;
 
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +32,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractJwtAuthentic
 		Query q = new Query(Criteria.where("username").is(username));
 		User user = this.mongoTemplate.findOne(q, User.class);
 		if(user!= null && user.validatePassword(password)) {
-			Date expiredDate = new Date(System.currentTimeMillis() + 24*3600000);
-			JwtUser jwtUser = new JwtUser(user.get_id(), user.getUsername(), expiredDate, user.getRoles());
-			String token = JwtTokenUtils.generate(jwtUser);
-			JwtUserAuthentication auth =  new JwtUserAuthentication(jwtUser, token);
-			auth.setAuthenticated(true);
-			auth.setDetails(user);
+			JwtUserAuthentication auth = createAuthenticationFromUser(user);
 			log.info("authenticate successfully by username and password");
 			return auth;
 		} else {

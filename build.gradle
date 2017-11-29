@@ -26,6 +26,10 @@ repositories {
         url 'http://maven.aliyun.com/nexus/content/groups/public/'
     }
  }
+ 
+springBoot {
+    executable = true
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -39,5 +43,6 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     
     compile("io.jsonwebtoken:jjwt:0.9.0")
+    compile("com.github.binarywang:weixin-java-mp:2.8.0")
 }
 

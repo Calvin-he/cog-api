@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -67,6 +68,14 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(createJwtAuthenticationFilter("/api/1.0/auth/login"), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(createJwtAutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();
+    }
+    
+    
+    @Override
+	public void configure(WebSecurity web) throws Exception {
+    	 web
+         .ignoring()
+            .antMatchers("/api/1.0/wechat/*");
     }
     
 }
