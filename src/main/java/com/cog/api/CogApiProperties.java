@@ -36,6 +36,9 @@ public class CogApiProperties {
 	
 	private String wxMchCertPath;
 	
+	@NotNull
+	private String wxNotifyUrl;
+	
 	public String getMediaRoot() {
 		return mediaRoot;
 	}
@@ -106,5 +109,13 @@ public class CogApiProperties {
 
 	public void setWxMchCertPath(String wxMchCertPath) {
 		this.wxMchCertPath = wxMchCertPath;
+	}
+
+	public String getWxNotifyUrl() {
+		return wxNotifyUrl;
+	}
+
+	public void setWxNotifyUrl(String wxNotifyUrl) {
+		this.wxNotifyUrl = wxNotifyUrl;
 	}
 }

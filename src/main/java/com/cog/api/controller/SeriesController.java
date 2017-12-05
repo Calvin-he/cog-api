@@ -165,6 +165,7 @@ public class SeriesController extends BaseController<Series> {
 		orderRequest.setTotalFee(Long.valueOf(Math.round(s.getPrice()*100)).intValue());
 		orderRequest.setOpenid(juser.getUsername());
 		orderRequest.setSpbillCreateIp(httpServletRequest.getRemoteAddr());
+		orderRequest.setNotifyURL(this.cogApiProperties.getWxNotifyUrl());
 		  
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime now = LocalDateTime.now();
