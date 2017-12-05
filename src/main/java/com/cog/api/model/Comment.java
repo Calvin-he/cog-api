@@ -8,7 +8,7 @@ public class Comment extends AbstractDocument{
 	private String content;
 	private int voteUpNum = 0;
 	private int top = 0;  // higer top value, higher order
-	private String username;
+	private String userId;
 	private String userNickname;
 	private String userAvatar;
 	private String repliedTo;
@@ -38,11 +38,11 @@ public class Comment extends AbstractDocument{
 	public void setTop(int top) {
 		this.top = top;
 	}
-	public String getUsername() {
-		return username;
+	public String getUserId() {
+		return userId;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public String getUserNickname() {
 		return userNickname;

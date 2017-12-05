@@ -3,6 +3,7 @@ package com.cog.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="series")
@@ -11,10 +12,12 @@ public class Series extends AbstractDocument {
 	private String desc;
 	private String bannerId;
 	private String bannerPath;
-	private Long price; // fen
+	private Double price; // yuan
 	private String noticeForPurchase;
 	private List<String> lessonList = new ArrayList<String>(); //a list of lesson ids
 	private List<String> freeLessons = new ArrayList<String>(); // a list of lesson ids
+	@Transient
+	private LearningProgress learningProgress;
 	
 	public String getTitle() {
 		return title;
@@ -37,10 +40,10 @@ public class Series extends AbstractDocument {
 	public void setBannerPath(String bannerPath) {
 		this.bannerPath = bannerPath;
 	}
-	public Long getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Long price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	public String getNoticeForPurchase() {
@@ -64,4 +67,11 @@ public class Series extends AbstractDocument {
 	public String getBannerPath() {
 		return bannerPath;
 	}
+	public LearningProgress getLearningProgress() {
+		return learningProgress;
+	}
+	public void setLearningProgress(LearningProgress learningProgress) {
+		this.learningProgress = learningProgress;
+	}
+	
 }

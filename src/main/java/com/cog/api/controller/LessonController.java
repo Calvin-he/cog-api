@@ -68,7 +68,7 @@ public class LessonController extends BaseController<Lesson> {
 		
 		c.setLessonId(id);
 		c.setContent(content);
-		c.setUsername(user.getUsername());
+		c.setUserId(user.get_id());
 		c.setUserNickname(user.getNickname());
 		c.setUserAvatar(user.getAvatar());
 		this.mongoTemplate.save(c);

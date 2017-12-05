@@ -28,6 +28,13 @@ public class CogApiProperties {
 
 	private String wxEncodingAESKey;
 
+	@NotNull
+	private String wxMchId;
+	
+	@NotNull
+	private String wxMchApiKey;
+	
+	private String wxMchCertPath;
 	
 	public String getMediaRoot() {
 		return mediaRoot;
@@ -76,7 +83,28 @@ public class CogApiProperties {
 	public void setWxEncodingAESKey(String wxEncodingAESKey) {
 		this.wxEncodingAESKey = wxEncodingAESKey;
 	}
-	
-	
-	
+
+	public String getWxMchId() {
+		return wxMchId;
+	}
+
+	public void setWxMchId(String wxMchId) {
+		this.wxMchId = wxMchId;
+	}
+
+	public String getWxMchApiKey() {
+		return wxMchApiKey;
+	}
+
+	public void setWxMchApiKey(String wxMchApiKey) {
+		this.wxMchApiKey = wxMchApiKey;
+	}
+
+	public String getWxMchCertPath() {
+		return wxMchCertPath;
+	}
+
+	public void setWxMchCertPath(String wxMchCertPath) {
+		this.wxMchCertPath = wxMchCertPath;
+	}
 }

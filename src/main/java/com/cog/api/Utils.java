@@ -3,6 +3,7 @@ package com.cog.api;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 public class Utils {
 
@@ -28,5 +29,10 @@ public class Utils {
 	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
 	    }
 	    return new String(hexChars);
+	}
+	
+	private static long DAY_IN_MILLISECONDS = 24*3600*1000;
+	public static boolean isSameDay(Date d1, Date d2) {
+		return (d1.getTime()/DAY_IN_MILLISECONDS) == (d2.getTime()/DAY_IN_MILLISECONDS);
 	}
 }

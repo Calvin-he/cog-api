@@ -79,7 +79,9 @@ public class MediaController extends BaseController<Media> {
 			if (Files.notExists(trashDir)) {
 				Files.createDirectory(trashDir);
 			}
-			Files.move(localPath, trashDir.resolve(localPath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+			if(Files.exists(localPath)) {
+				Files.move(localPath, trashDir.resolve(localPath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+			}			
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

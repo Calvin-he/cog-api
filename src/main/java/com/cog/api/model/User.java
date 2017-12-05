@@ -1,8 +1,6 @@
 package com.cog.api.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -32,7 +30,6 @@ public class User extends AbstractDocument {
 	private String salt;
 	private String hashed_password;
 	private Set<String> roles = new TreeSet<String>();
-	private List<PaidSeries> paidSeries = new ArrayList<PaidSeries>();
 	
 	public User(String username) {
 		Assert.isTrue(!StringUtils.isEmpty(username), "Username must not be empty!");
@@ -97,13 +94,7 @@ public class User extends AbstractDocument {
 	public void addRole(String role) {
 		this.roles.add(role);
 	}
-	public List<PaidSeries> getPaidSeries() {
-		return paidSeries;
-	}
-	public void addPaidSeries(PaidSeries paidSeries) {
-		this.paidSeries.add(paidSeries);
-	}
-
+	
 	public void setPassword(String password) {
 		this.hashed_password = Utils.sha1(password, this.salt);
 	}
@@ -115,9 +106,3 @@ public class User extends AbstractDocument {
 }
 
 
-class PaidSeries {
-	String seriesId;
-	Date paidDate;
-	String lessonIdOfLastVisted;
-	Date dateOfLastVisited;
-}
