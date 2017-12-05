@@ -160,7 +160,7 @@ public class SeriesController extends BaseController<Series> {
 		WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
 		orderRequest.setTradeType(WxPayConstants.TradeType.JSAPI);
 		orderRequest.setBody(s.getTitle());
-		String ourtTradeNo = UUID.randomUUID().toString();
+		String ourtTradeNo = ObjectId.get().toHexString();
 		orderRequest.setOutTradeNo(ourtTradeNo);
 		orderRequest.setTotalFee(Long.valueOf(Math.round(s.getPrice()*100)).intValue());
 		orderRequest.setOpenid(juser.getUsername());
