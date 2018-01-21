@@ -69,7 +69,7 @@ public class WechatController {
 		return result;
 	}
 
-	@GetMapping("/paynotify")
+	@PostMapping("/paynotify")
 	public String handlePayNotification(HttpServletRequest request, HttpServletResponse response) {
 		try {
 		    String xmlResult = IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
