@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cog.api.Utils;
@@ -187,10 +185,11 @@ public class SeriesController extends BaseController<Series> {
 	}
 	
 	@GetMapping("{id}/check_paystate")
-	public Map<String, String> checkPayState(@RequestParam String outTradeNo) {
-		Order order= this.mongoTemplate.findById(new ObjectId(outTradeNo), Order.class);
+	public Map<String, String> checkPayState(@PathVariable String id) {
+		JwtUser juser = SecurityUtils.getCurrentUser();
+		Order order= this.mongoTemplate.findOne(Query.query(Criteria.where("userId").is(juser.getId()).and("seriesId").is(id)), Order.class);
 		Map<String, String> result = new HashMap<String, String>();
-		if(order != null) {
+		if(order == null) {
 			result.put("state", "prepay");
 		} else {
 			result.put("state", "success");
