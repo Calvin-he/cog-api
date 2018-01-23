@@ -5,13 +5,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="lessons")
 public class Lesson extends AbstractDocument{
 	
+	private String seriesId;
 	private String title;
 	private String content;
-	private String mediaId;
-	private String mediaPath;
-	private String mediaId2;
-	private String mediaPath2;
+	private boolean isDraft;
+	private boolean isTrial;
+	private Integer sequence; // use for ordering
 	
+	public String getSeriesId() {
+		return seriesId;
+	}
+	public void setSeriesId(String seriesId) {
+		this.seriesId = seriesId;
+	}
 	public String getTitle() {
 		return title;
 	}
@@ -24,28 +30,23 @@ public class Lesson extends AbstractDocument{
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getMediaId() {
-		return mediaId;
+	public boolean isDraft() {
+		return isDraft;
 	}
-	public String getMediaId2() {
-		return mediaId2;
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
 	}
-	public void setMediaId2(String mediaId2) {
-		this.mediaId2 = mediaId2;
+	public Integer getSequence() {
+		return sequence;
 	}
-	public String getMediaPath2() {
-		return mediaPath2;
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
 	}
-	public void setMediaPath2(String mediaPath2) {
-		this.mediaPath2 = mediaPath2;
+	public void setTrial(boolean isTrial) {
+		this.isTrial = isTrial;
 	}
-	public void setMediaId(String mediaId) {
-		this.mediaId = mediaId;
+	public boolean isTrial() {
+		return isTrial;
 	}
-	public String getMediaPath() {
-		return mediaPath;
-	}
-	public void setMediaPath(String mediaPath) {
-		this.mediaPath = mediaPath;
-	}	
+	
 }

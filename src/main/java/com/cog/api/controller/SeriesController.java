@@ -2,23 +2,23 @@ package com.cog.api.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,77 +42,50 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 public class SeriesController extends BaseController<Series> {
 	@Autowired
 	private WxService wxService;
-	
-	@Override
-	protected Series innerCreate(Series s) {
-		String path = this.findMediaPathById(s.getBannerId());
-		s.setBannerPath(path);
-		return s;
-	}
-	
-	@Override
-	protected Map<String, Object> innerUpdate(String id, Map<String, Object> updatedFields) {
-		Map<String, Object> m  = new HashMap<String, Object>(updatedFields);
-		String bannerId = (String)updatedFields.get("bannerId");
-		if(!StringUtils.isEmpty(bannerId)) {
-			m.put("bannerPath", this.findMediaPathById(bannerId));
-		}
-		return m;
-	}
-	
+		
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public Series get(@PathVariable String id) {
 		JwtUser juser = SecurityUtils.getCurrentUser();
 		Series series = this.mongoTemplate.findById(new ObjectId(id), Series.class);
+		
+		List<Lesson> lessons = this.listLesson(id);
+		series.setLessonList(lessons);
 		LearningProgress lp = this.findLearningProgress(juser.getId(), id);
 		series.setLearningProgress(lp);
 		return series;
-		
 	}
 	
 	@GetMapping("/{id}/lessons")
 	public List<Lesson> listLesson(@PathVariable String id) {
 		JwtUser juser = SecurityUtils.getCurrentUser();
-		Series series = this.mongoTemplate.findById(new ObjectId(id), Series.class);				
-		Query q = new Query(Criteria.where("_id").in(series.getLessonList()));
+		Query q = new Query(Criteria.where("seriesId").is(id)).with(new Sort(Sort.Direction.ASC, "sequence"));
 		List<Lesson> lessons = this.mongoTemplate.find(q, Lesson.class);
-		lessons.sort(new Comparator<Lesson>(){
-			@Override
-			public int compare(Lesson o1, Lesson o2) {
-				return series.getLessonList().indexOf(o1.get_id()) 
-							- series.getLessonList().indexOf(o2.get_id());
-			}	
-		});
-		LearningProgress lp = this.findLearningProgress(juser.getId(), id);
-		if(lp != null) {
-			Integer curProgress = lp.getCurProgress();
-			Date dateOfLastVisited = lp.getDateOfLastVisitLesson();
-			if(dateOfLastVisited == null ||  !Utils.isSameDay(dateOfLastVisited, new Date())) {
-				curProgress += 1;
-			}			
-			for(int i=curProgress; i<lessons.size(); i++) {
-				Lesson lesson = lessons.get(i);
-				lesson.setContent(null);
-				lesson.setMediaId(null);
-				lesson.setMediaPath(null);
-				lesson.setMediaPath2(null);
-				lesson.setMediaId2(null);
-			}
-			
-		} else {
-			List<String> freelessonIds = series.getFreeLessons();
-			for(Lesson lesson:lessons) {
-				if(!freelessonIds.contains(lesson.get_id())) {
+		if(juser.isAdmin()) {
+			return lessons;
+		}else {
+			lessons = lessons.stream().filter(les -> !les.isDraft()).collect(Collectors.toList());
+			LearningProgress lp = this.findLearningProgress(juser.getId(), id);
+			if(lp != null) {
+				Integer curProgress = lp.getCurProgress();
+				Date dateOfLastVisited = lp.getDateOfLastVisitLesson();
+				if(dateOfLastVisited == null ||  !Utils.isSameDay(dateOfLastVisited, new Date())) {
+					curProgress += 1;
+				}			
+				for(int i=curProgress; i<lessons.size(); i++) {
+					Lesson lesson = lessons.get(i);
 					lesson.setContent(null);
-					lesson.setMediaId(null);
-					lesson.setMediaPath(null);
-					lesson.setMediaId2(null);
-					lesson.setMediaPath2(null);
 				}
- 			}
-		}	
-		return lessons;
+				
+			} else {
+				for(Lesson lesson:lessons) {
+					if(!lesson.isTrial()) {
+						lesson.setContent(null);
+					}
+	 			}
+			}	
+			return lessons;
+		}
 	}
 	
 	private LearningProgress findLearningProgress(String userId, String seriesId) {
