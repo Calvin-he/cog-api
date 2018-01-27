@@ -83,7 +83,7 @@ public class LessonController extends BaseController<Lesson> {
 			query = new Query(Criteria.where("_id").is(commentId));
 			this.mongoTemplate.remove(query, Comment.class);
 		} else {
-			query = new Query(Criteria.where("_id").is(commentId).andOperator(Criteria.where("username").is(juser.getUsername())));
+			query = new Query(Criteria.where("_id").is(commentId).andOperator(Criteria.where("userId").is(juser.getId())));
 			this.mongoTemplate.remove(query, Comment.class);
 		}
 	}
