@@ -1,5 +1,6 @@
 package com.cog.api.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,9 @@ public class LessonController extends BaseController<Lesson> {
 	@GetMapping("/{id}/comments")
 	public List<Comment> listComment(@PathVariable String id) {
 		Query q = new Query(Criteria.where("lessonId").is(id));
-		return this.mongoTemplate.find(q, Comment.class);
+		List<Comment> comments = this.mongoTemplate.find(q, Comment.class);
+		Collections.reverse(comments);
+		return comments;
 	}
 	
 	@PostMapping("/{id}/comments")
