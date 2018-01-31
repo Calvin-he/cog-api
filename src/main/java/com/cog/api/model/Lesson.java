@@ -11,6 +11,7 @@ public class Lesson extends AbstractDocument{
 	private String mediaPath;
 	private String mediaId2;
 	private String mediaPath2;
+	private Integer visitedCount = 0;
 	
 	public String getTitle() {
 		return title;
@@ -47,5 +48,12 @@ public class Lesson extends AbstractDocument{
 	}
 	public void setMediaPath(String mediaPath) {
 		this.mediaPath = mediaPath;
-	}	
+	}
+	public Integer getVisitedCount() {
+		return visitedCount;
+	}
+	public void setVisitedCount(Integer visitedCount) {
+		this.visitedCount = visitedCount;
+	}
+	
 }

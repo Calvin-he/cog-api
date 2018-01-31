@@ -8,11 +8,13 @@ import java.util.Map;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,7 +70,7 @@ public class LessonController extends BaseController<Lesson> {
 		Comment c = new Comment();
 		JwtUser juser = SecurityUtils.getCurrentUser();
 		User user = this.mongoTemplate.findById(new ObjectId(juser.getId()), User.class);
-		
+		System.out.println("user id is " + juser.getId());
 		c.setLessonId(id);
 		c.setContent(content);
 		c.setUserId(user.get_id());
@@ -91,4 +93,9 @@ public class LessonController extends BaseController<Lesson> {
 		}
 	}
 	
+	@PutMapping("{id}/action/inc_visited_count")
+	public void incVisitedCount(@PathVariable String id) {
+		Query query = new Query(Criteria.where("_id").is(id));
+		this.mongoTemplate.updateFirst(query, new Update().inc("visitedCount", 1), Lesson.class);
+	}
 }
