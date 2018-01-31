@@ -87,35 +87,39 @@ public class SeriesController extends BaseController<Series> {
 							- series.getLessonList().indexOf(o2.get_id());
 			}	
 		});
-		LearningProgress lp = this.findLearningProgress(juser.getId(), id);
-		if(lp != null) {
-			Integer curProgress = lp.getCurProgress();
-			Date dateOfLastVisited = lp.getDateOfLastVisitLesson();
-			if(dateOfLastVisited == null ||  !Utils.isSameDay(dateOfLastVisited, new Date())) {
-				curProgress += 1;
-			}			
-			for(int i=curProgress; i<lessons.size(); i++) {
-				Lesson lesson = lessons.get(i);
-				lesson.setContent(null);
-				lesson.setMediaId(null);
-				lesson.setMediaPath(null);
-				lesson.setMediaPath2(null);
-				lesson.setMediaId2(null);
-			}
-			
-		} else {
-			List<String> freelessonIds = series.getFreeLessons();
-			for(Lesson lesson:lessons) {
-				if(!freelessonIds.contains(lesson.get_id())) {
+		if(juser.isAdmin()) {
+			return lessons;
+		} else {		
+			LearningProgress lp = this.findLearningProgress(juser.getId(), id);
+			if(lp != null) {
+				Integer curProgress = lp.getCurProgress();
+				Date dateOfLastVisited = lp.getDateOfLastVisitLesson();
+				if(dateOfLastVisited == null ||  !Utils.isSameDay(dateOfLastVisited, new Date())) {
+					curProgress += 1;
+				}			
+				for(int i=curProgress; i<lessons.size(); i++) {
+					Lesson lesson = lessons.get(i);
 					lesson.setContent(null);
 					lesson.setMediaId(null);
 					lesson.setMediaPath(null);
-					lesson.setMediaId2(null);
 					lesson.setMediaPath2(null);
+					lesson.setMediaId2(null);
 				}
- 			}
-		}	
-		return lessons;
+				
+			} else {
+				List<String> freelessonIds = series.getFreeLessons();
+				for(Lesson lesson:lessons) {
+					if(!freelessonIds.contains(lesson.get_id())) {
+						lesson.setContent(null);
+						lesson.setMediaId(null);
+						lesson.setMediaPath(null);
+						lesson.setMediaId2(null);
+						lesson.setMediaPath2(null);
+					}
+	 			}
+			}	
+			return lessons;
+		}
 	}
 	
 	private LearningProgress findLearningProgress(String userId, String seriesId) {

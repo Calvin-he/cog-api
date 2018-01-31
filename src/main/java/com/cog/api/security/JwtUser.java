@@ -32,7 +32,7 @@ public class JwtUser {
 	
 	public boolean isAdmin() {
 		for(String role: this.roles) {
-			if(role.equals("ADMIN")) {
+			if(role.equals("ROLE_ADMIN")) {
 				return true;
 			}
 		}
