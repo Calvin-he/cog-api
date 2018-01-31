@@ -93,7 +93,7 @@ public class LessonController extends BaseController<Lesson> {
 		}
 	}
 	
-	@PutMapping("{id}/action/inc_visited_count")
+	@PutMapping("{id}/action/inc-visited-count")
 	public void incVisitedCount(@PathVariable String id) {
 		Query query = new Query(Criteria.where("_id").is(id));
 		this.mongoTemplate.updateFirst(query, new Update().inc("visitedCount", 1), Lesson.class);

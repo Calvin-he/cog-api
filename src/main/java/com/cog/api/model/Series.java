@@ -18,6 +18,8 @@ public class Series extends AbstractDocument {
 	private List<String> freeLessons = new ArrayList<String>(); // a list of lesson ids
 	@Transient
 	private LearningProgress learningProgress;
+	@Transient
+	private long purchaseCount;
 	
 	public String getTitle() {
 		return title;
@@ -72,6 +74,12 @@ public class Series extends AbstractDocument {
 	}
 	public void setLearningProgress(LearningProgress learningProgress) {
 		this.learningProgress = learningProgress;
+	}
+	public long getPurchaseCount() {
+		return purchaseCount;
+	}
+	public void setPurchaseCount(long purchaseCount) {
+		this.purchaseCount = purchaseCount;
 	}
 	
 }

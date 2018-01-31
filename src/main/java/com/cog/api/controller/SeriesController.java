@@ -67,6 +67,9 @@ public class SeriesController extends BaseController<Series> {
 		Series series = this.mongoTemplate.findById(new ObjectId(id), Series.class);
 		LearningProgress lp = this.findLearningProgress(juser.getId(), id);
 		series.setLearningProgress(lp);
+		
+		long purchaseCount = this.mongoTemplate.count(Query.query(Criteria.where("seriesId").is(id)), Order.class);
+		series.setPurchaseCount(purchaseCount);
 		return series;
 		
 	}
