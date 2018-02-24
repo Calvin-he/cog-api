@@ -37,6 +37,7 @@ public class AdminAccountCommandLineRunner implements ApplicationRunner {
 			log.info(String.format("creating User '%s'...", username));
 			User u = new User(username);
 			u.setPassword(password);
+			u.setNickname("Administrator");
 			for(String role:roles) {
 				u.addRole(role);
 			}

@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,5 +99,35 @@ public class LessonController extends BaseController<Lesson> {
 	public void incVisitedCount(@PathVariable String id) {
 		Query query = new Query(Criteria.where("_id").is(id));
 		this.mongoTemplate.updateFirst(query, new Update().inc("visitedCount", 1), Lesson.class);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PutMapping("{id}/comments/{commentId}/reply")
+	public Comment replayComment(@PathVariable String id, @PathVariable String commentId, @RequestBody Map<String, String> comment) {
+		JwtUser juser = SecurityUtils.getCurrentUser();
+		Comment reply = new Comment();
+		reply.setContent(comment.get("content"));
+		reply.setUserId(juser.getId());
+		reply.setUserNickname(comment.get("userNickname"));
+		reply.setUserAvatar(comment.get("userAvatar"));
+		Query query = new Query(Criteria.where("_id").is(commentId));
+		Update update = new Update().push("replies", reply);
+		this.mongoTemplate.updateFirst(query, update, Comment.class);
+		return reply;
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@DeleteMapping("{id}/comments/{commentId}/reply/{index}")
+	public void deleteCommentReply(@PathVariable String id, @PathVariable String commentId, 
+			@PathVariable int index) {
+		Query query = new Query(Criteria.where("_id").is(commentId));
+		Comment comment = this.mongoTemplate.findOne(query, Comment.class);
+		Comment[] replies = comment.getReplies();
+		if(index < 0 || index > replies.length) {
+			throw new RuntimeException("Invalid parameter of 'index'");
+		}
+		Comment[] newReplies= ArrayUtils.remove(replies, index);
+		Update update = new Update().set("replies", newReplies);
+		this.mongoTemplate.updateFirst(query, update, Comment.class);
 	}
 }

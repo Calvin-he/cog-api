@@ -11,7 +11,7 @@ public class Comment extends AbstractDocument{
 	private String userId;
 	private String userNickname;
 	private String userAvatar;
-	private String repliedTo;
+	private Comment[] replies = {};
 	
 	public String getLessonId() {
 		return lessonId;
@@ -56,11 +56,10 @@ public class Comment extends AbstractDocument{
 	public void setUserAvatar(String userAvatar) {
 		this.userAvatar = userAvatar;
 	}
-	public String getRepliedTo() {
-		return repliedTo;
+	public Comment[] getReplies() {
+		return replies;
 	}
-	public void setReplied(String repliedTo) {
-		this.repliedTo = repliedTo;
+	public void setReplies(Comment[] replies) {
+		this.replies = replies;
 	}
-
 }
